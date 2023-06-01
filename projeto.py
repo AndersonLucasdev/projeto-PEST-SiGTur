@@ -16,7 +16,7 @@ def menu_adm():
     [3] - Aluno
     [0] - Sair
     ''')
-    adm = input("Escolha uma opção de admin: ")
+    adm = input("Escolha uma opção de admin: ").strip()
     return adm
 
 def menu_coordenador():
@@ -26,7 +26,7 @@ def menu_coordenador():
     [3] - Ver turma
     [4] - Apagar turma
     ''')
-    opcao = int(input("Escolha uma opção de admin: "))
+    opcao = int(input("Escolha uma opção de admin: ")).strip()
     return opcao
 
 
@@ -79,7 +79,7 @@ def editar_aluno(editar_aluno):
     flag_dicionario = verifica_dicionario_aluno(editar_aluno, dicionario_aluno)
     if flag_dicionario == True:
         print("Digite o novo nome do aluno: ")
-        novo_nome_aluno = input(">>> ")
+        novo_nome_aluno = input(">>> ").strip().lower()
         flag_nome = verifica_nome_aluno(novo_nome_aluno)
         if flag_nome == True:
             print("Aluno editado com sucesso!")
@@ -88,8 +88,13 @@ def visualizar_alunos():
     print(dicionario_aluno)
 
 def excluir_aluno(nome_excluir_aluno):
-    
-
+    flag_dicionario = verifica_dicionario_aluno(nome_excluir_aluno, dicionario_aluno)
+    if flag_dicionario == True:
+        print("Digite o nome do aluno que deseja excluir: ")
+        nome_aluno = input(">>> ")
+        flag_nome = verifica_nome_aluno(nome_aluno)
+        if flag_nome == True:
+            print("Aluno excluido com sucesso!")
 
 
 ## funções que verificam aluno
@@ -134,15 +139,15 @@ while True:
             pass
         ## editar aluno
         elif opcao_menu_aluno == '2':
-            print("Digite o nome do aluno que deseja editar: ")
-            nome_editar_aluno = input(">>> ")
+            print("Digite a matricula do aluno que deseja editar: ")
+            nome_editar_aluno = input(">>> ").strip().lower()
             editar_aluno(nome_editar_aluno)
         ## visualizar alunos
         elif opcao_menu_aluno == '3':
             visualizar_alunos()
         elif opcao_menu_aluno == '4':
             print("Digite o nome do aluno que deseja excluir: ")
-            nome_excluir_aluno = input(">>> ")
+            nome_excluir_aluno = input(">>> ").strip().lower()
             excluir_aluno(nome_excluir_aluno)
     else:
         print("Opção inválida! Digite um opção valida")
