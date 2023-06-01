@@ -30,8 +30,6 @@ def menu_coordenador():
     return opcao
 
 
-
-
 def menu_professor():
     print('''
     [1] - Cadastrar novo professor
@@ -53,13 +51,8 @@ def menu_aluno():
     ''')
     return input("Escolha uma opção: ")
 
-def cadastrar_aluno():
-    pass
 
 # funções aluno
-
-def cadastrar_aluno():
-    pass
 
 
 # def cadastro_aluno():
@@ -97,7 +90,7 @@ def excluir_aluno(nome_excluir_aluno):
             print("Aluno excluido com sucesso!")
 
 
-## funções que verificam aluno
+## funções de verificação do aluno
 def verifica_dicionario_aluno(nome, dicionario):
     if len(dicionario) == 0:
         return("Não existem alunos cadastrados")
@@ -113,6 +106,7 @@ def verifica_nome_aluno(nome_aluno):
     else:
         return True
 
+## codigo principal
 
 while True:
     # chama a função menu login ou menu principal
@@ -131,8 +125,6 @@ while True:
         pass
     
     elif opcao_menu_adm == '3':
-        pass
-    elif opcao_menu_adm == '0':
         opcao_menu_aluno = menu_aluno()
         ## cadastrar aluno
         if opcao_menu_aluno == '1':
@@ -149,6 +141,8 @@ while True:
             print("Digite o nome do aluno que deseja excluir: ")
             nome_excluir_aluno = input(">>> ").strip().lower()
             excluir_aluno(nome_excluir_aluno)
+    elif opcao_menu_adm == '0':
+        break
     else:
         print("Opção inválida! Digite um opção valida")
         print(30 * '=-')
