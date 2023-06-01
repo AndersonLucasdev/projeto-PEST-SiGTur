@@ -61,20 +61,6 @@ def cadastrar_aluno():
 def cadastrar_aluno():
     pass
 
-def editar_aluno(editar_aluno):
-    # verifica se existem alunos cadastrados
-    if len(dicionario_aluno) == 0:
-        print("Não existem alunos cadastrados")
-    else:
-        if editar_aluno not in dicionario_aluno:
-            print("O aluno não está cadastrado")
-        else:
-            novo_nome_aluno = input("Digite o nome do aluno: ")
-            if novo_nome_aluno.count(' ') < 1 or novo_nome_aluno: # verifica se o nome tem numeros
-                print("O nome deve ser composto e não deve conter números")
-            else:
-                pass
-
 
 # def cadastro_aluno():
 #     aluno = input("Digite o nome do aluno que deseja cadastrar: ")
@@ -89,7 +75,38 @@ def editar_aluno(editar_aluno):
 #         print("Este aluno já está cadastrado. ")
 #         print(30*"=-")
 
+def editar_aluno(editar_aluno):
+    flag_dicionario = verifica_dicionario_aluno(editar_aluno, dicionario_aluno)
+    if flag_dicionario == True:
+        print("Digite o novo nome do aluno: ")
+        novo_nome_aluno = input(">>> ")
+        flag_nome = verifica_nome_aluno(novo_nome_aluno)
+        if flag_nome == True:
+            print("Aluno editado com sucesso!")
 
+def visualizar_alunos():
+    print(dicionario_aluno)
+
+def excluir_aluno(nome_excluir_aluno):
+    
+
+
+
+## funções que verificam aluno
+def verifica_dicionario_aluno(nome, dicionario):
+    if len(dicionario) == 0:
+        return("Não existem alunos cadastrados")
+    else:
+        if nome not in dicionario:
+            return("O aluno não está cadastrado")
+        else:
+            return True
+
+def verifica_nome_aluno(nome_aluno):
+    if nome_aluno.count(' ') < 1 or nome_aluno.isnumeric():
+        return("O nome deve ser composto e não deve conter números")
+    else:
+        return True
 
 
 while True:
@@ -100,7 +117,6 @@ while True:
         # chamando a função menu coordenador
         opcao_menu_coordenador = menu_coordenador()
         if opcao_menu_coordenador == 1:
-            print(dicionario_coordenador)
             print(dicionario_aluno)
             print(dicionario_professor)
         else:
@@ -113,14 +129,21 @@ while True:
         pass
     elif opcao_menu_adm == '0':
         opcao_menu_aluno = menu_aluno()
+        ## cadastrar aluno
         if opcao_menu_aluno == '1':
             pass
+        ## editar aluno
         elif opcao_menu_aluno == '2':
             print("Digite o nome do aluno que deseja editar: ")
             nome_editar_aluno = input(">>> ")
             editar_aluno(nome_editar_aluno)
-
-        
+        ## visualizar alunos
+        elif opcao_menu_aluno == '3':
+            visualizar_alunos()
+        elif opcao_menu_aluno == '4':
+            print("Digite o nome do aluno que deseja excluir: ")
+            nome_excluir_aluno = input(">>> ")
+            excluir_aluno(nome_excluir_aluno)
     else:
         print("Opção inválida! Digite um opção valida")
         print(30 * '=-')
