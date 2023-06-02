@@ -68,41 +68,56 @@ def menu_aluno():
 #         print("Este aluno já está cadastrado. ")
 #         print(30*"=-")
 
-def editar_aluno(editar_aluno):
-    flag_dicionario = verifica_dicionario_aluno(editar_aluno, dicionario_aluno)
+def cadastro_aluno(aluno):
+    if aluno not in dicionario_aluno:
+        if dicionario_aluno:
+            nova_matricula = max(dicionario_aluno.keys()) + 1
+        else:
+            nova_matricula = 1
+        dicionario_aluno[nova_matricula] = aluno
+    else:
+        print("Este aluno já está cadastrado.")
+        print(30 * "=-")
+
+
+def editar_aluno(matricula):
+    flag_dicionario = verifica_dicionario_aluno(matricula, dicionario_aluno)
     if flag_dicionario == True:
         print("Digite o novo nome do aluno: ")
         novo_nome_aluno = input(">>> ").strip().lower()
         flag_nome = verifica_nome_aluno(novo_nome_aluno)
         if flag_nome == True:
+            dicionario_aluno[matricula] = novo_nome_aluno
             print("Aluno editado com sucesso!")
+    else:
+        return flag_dicionario
 
 def visualizar_alunos():
-    print(dicionario_aluno)
+    if len(dicionario_aluno) == 0:
+        print("Não há alunos cadastrados!")
+    else:
+        print(dicionario_aluno)
 
-def excluir_aluno(nome_excluir_aluno):
-    flag_dicionario = verifica_dicionario_aluno(nome_excluir_aluno, dicionario_aluno)
+def excluir_aluno(matricula):
+    flag_dicionario = verifica_dicionario_aluno(matricula, dicionario_aluno)
     if flag_dicionario == True:
-        print("Digite o nome do aluno que deseja excluir: ")
-        nome_aluno = input(">>> ")
-        flag_nome = verifica_nome_aluno(nome_aluno)
-        if flag_nome == True:
+            del dicionario_aluno[matricula]
             print("Aluno excluido com sucesso!")
 
 
 ## funções de verificação do aluno
-def verifica_dicionario_aluno(nome, dicionario):
+def verifica_dicionario_aluno(matricula, dicionario):
     if len(dicionario) == 0:
-        return("Não existem alunos cadastrados")
+        print("Não existem alunos cadastrados")
     else:
-        if nome not in dicionario:
-            return("O aluno não está cadastrado")
-        else:
+        if matricula in dicionario:
             return True
+        else:
+            print("O aluno não está cadastrado!")
 
 def verifica_nome_aluno(nome_aluno):
     if nome_aluno.count(' ') < 1 or nome_aluno.isnumeric():
-        return("O nome deve ser composto e não deve conter números")
+        print("O nome deve ser composto e não deve conter números")
     else:
         return True
 
@@ -122,25 +137,31 @@ while True:
             print("Opção inválida! Digite um opção valida")
     
     elif opcao_menu_adm == '2':
-        pass
+        while True:
+            pass
     
     elif opcao_menu_adm == '3':
-        opcao_menu_aluno = menu_aluno()
-        ## cadastrar aluno
-        if opcao_menu_aluno == '1':
-            pass
-        ## editar aluno
-        elif opcao_menu_aluno == '2':
-            print("Digite a matricula do aluno que deseja editar: ")
-            nome_editar_aluno = input(">>> ").strip().lower()
-            editar_aluno(nome_editar_aluno)
-        ## visualizar alunos
-        elif opcao_menu_aluno == '3':
-            visualizar_alunos()
-        elif opcao_menu_aluno == '4':
-            print("Digite o nome do aluno que deseja excluir: ")
-            nome_excluir_aluno = input(">>> ").strip().lower()
-            excluir_aluno(nome_excluir_aluno)
+        while True:
+            opcao_menu_aluno = menu_aluno()
+            ## cadastrar aluno
+            if opcao_menu_aluno == '1':
+                print("Digite o nome do aluno que deseja cadastrar: ")
+                nome_aluno = input(">>> ").strip().capitalize()
+                cadastro_aluno(nome_aluno)
+            ## editar aluno
+            elif opcao_menu_aluno == '2':
+                print("Digite a matricula do aluno que deseja editar: ")
+                matricula_editar_aluno = int(input(">>> "))
+                editar_aluno(matricula_editar_aluno)
+            ## visualizar alunos
+            elif opcao_menu_aluno == '3':
+                visualizar_alunos()
+            elif opcao_menu_aluno == '4':
+                print("Digite a matricula do aluno que deseja excluir: ")
+                matricula_excluir_aluno = int(input(">>> "))
+                excluir_aluno(matricula_excluir_aluno)
+            elif opcao_menu_aluno == '0':
+                break
     elif opcao_menu_adm == '0':
         break
     else:
