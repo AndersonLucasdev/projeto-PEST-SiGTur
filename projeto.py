@@ -101,10 +101,18 @@ def verifica_dicionario(matricula, dicionario):
             print("A pessoa não está cadastrado!")
 
 def verifica_nome(nome_aluno):
-    # if ' ' not in nome_aluno or nome_aluno != nome_aluno.isalnum() or nome_aluno != nome_aluno.isnumeric():
-    #     print("O nome deve ser composto e não deve conter números.")
-    # else:
-        return True
+    flag =  True
+    if ' ' in nome_aluno:
+        lista_aluno = nome_aluno.split(" ")
+        for elemento in lista_aluno:
+            if elemento.isalpha() == False:
+                flag = False
+            else:
+                print("O nome deve ser composto e não deve conter números.")
+        if flag == True:
+            return True
+    else:
+        print("O nome deve ser composto e não deve conter números.")
 
 ## funções professor
 def visualizar_professor(nome, dicionario):
