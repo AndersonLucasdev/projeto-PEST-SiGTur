@@ -1,5 +1,5 @@
 # chave coordenador
-dicionario_coordenador = {1 : "Alisson"}
+dicionario_coordenador = {}
 
 # chave professor
 dicionario_professor = {}
@@ -53,76 +53,66 @@ def menu_aluno():
 
 
 # funções aluno
-
-
-# def cadastro_aluno():
-#     aluno = input("Digite o nome do aluno que deseja cadastrar: ")
-#     if aluno not in dicionario_aluno:
-#         var = dicionario_aluno.get(1, 0)
-#         if var == 1:
-#             for num_chave in dicionario_aluno.keys():
-#             nova_matricula = num_chave + 1
-#         if var == 0:
-#             nova_matricula = 1
-#     else:
-#         print("Este aluno já está cadastrado. ")
-#         print(30*"=-")
-
-def cadastro_aluno(aluno):
-    if aluno not in dicionario_aluno:
-        if dicionario_aluno:
-            nova_matricula = max(dicionario_aluno.keys()) + 1
+def cadastro(dicionario, nome):
+    flag_dicionario = verifica_nome(nome)
+    if flag_dicionario == True:
+        if dicionario:
+            matricula = max(dicionario.keys()) + 1
         else:
-            nova_matricula = 1
-        dicionario_aluno[nova_matricula] = aluno
-    else:
-        print("Este aluno já está cadastrado.")
-        print(30 * "=-")
+            matricula = 1
+        dicionario[matricula] = nome
 
 
-def editar_aluno(matricula):
-    flag_dicionario = verifica_dicionario_aluno(matricula, dicionario_aluno)
+def editar(matricula, dicionario):
+    flag_dicionario = verifica_dicionario(matricula, dicionario)
     if flag_dicionario == True:
         print("Digite o novo nome do aluno: ")
-        novo_nome_aluno = input(">>> ").strip().lower()
-        flag_nome = verifica_nome_aluno(novo_nome_aluno)
+        novo_nome_aluno = input(">>> ").strip().capitalize()
+        flag_nome = verifica_nome(novo_nome_aluno)
         if flag_nome == True:
             dicionario_aluno[matricula] = novo_nome_aluno
             print("Aluno editado com sucesso!")
     else:
         return flag_dicionario
 
-def visualizar_alunos():
-    if len(dicionario_aluno) == 0:
+def visualizar(dicionario):
+    if len(dicionario) == 0:
         print("Não há alunos cadastrados!")
     else:
-        print(dicionario_aluno)
+        print(f"{'Matrícula':<10} | {'Nome do aluno':<25}")
+        for matricula_id, aluno in dicionario.items():
+            print(f"{matricula_id:<10} | {aluno:<25}")
 
-def excluir_aluno(matricula):
-    flag_dicionario = verifica_dicionario_aluno(matricula, dicionario_aluno)
+def excluir(matricula, dicionario):
+    flag_dicionario = verifica_dicionario(matricula, dicionario)
     if flag_dicionario == True:
-            del dicionario_aluno[matricula]
-            print("Aluno excluido com sucesso!")
+        del dicionario[matricula]
+        print("Excluido com sucesso!")
 
 
 ## funções de verificação do aluno
-def verifica_dicionario_aluno(matricula, dicionario):
+def verifica_dicionario(matricula, dicionario):
     if len(dicionario) == 0:
-        print("Não existem alunos cadastrados")
+        print("Não existem pessoas cadastrados.")
     else:
         if matricula in dicionario:
             return True
         else:
-            print("O aluno não está cadastrado!")
+            print("A pessoa não está cadastrado!")
 
-def verifica_nome_aluno(nome_aluno):
-    if nome_aluno.count(' ') < 1 or nome_aluno.isnumeric():
-        print("O nome deve ser composto e não deve conter números")
-    else:
+def verifica_nome(nome_aluno):
+    # if ' ' not in nome_aluno or nome_aluno != nome_aluno.isalnum() or nome_aluno != nome_aluno.isnumeric():
+    #     print("O nome deve ser composto e não deve conter números.")
+    # else:
         return True
 
-## codigo principal
+## funções professor
+def visualizar_professor(nome, dicionario):
+    flag_verifica = verifica_dicionario(nome, dicionario)
+    if flag_verifica == True:
+        print(dicionario_professor[nome])
 
+## codigo principal
 while True:
     # chama a função menu login ou menu principal
     opcao_menu_adm = menu_adm()
@@ -138,8 +128,24 @@ while True:
     
     elif opcao_menu_adm == '2':
         while True:
-            pass
-    
+            opcao_menu_professor = menu_professor()
+            ## cadastrar professor
+            if opcao_menu_professor == '1':
+                print("Digite o nome do professor que deseja cadastrar: ")
+                nome_professor = input(">>> ").strip().capitalize()
+                cadastro(dicionario_professor, nome_professor)
+            elif opcao_menu_professor == '2':
+                print("Digite a matricula do professor que deseja editar: ")
+                matricula_editar_professor = int(input(">>> "))
+                editar(matricula_editar_professor, dicionario_professor)
+            elif opcao_menu_professor == '3':
+                print("Digite o nome do professor que gostaria de ver os dados")
+                nome_ver_dados_professor = input(">>> ")
+                visualizar_professor(nome_ver_dados_professor, dicionario_professor)
+            elif opcao_menu_professor == '4':
+                print("Digite a matricula do professor que deseja excluir: ")
+                matricula_excluir_professor = int(input(">>> "))
+                excluir(matricula_excluir_professor, dicionario_professor)
     elif opcao_menu_adm == '3':
         while True:
             opcao_menu_aluno = menu_aluno()
@@ -147,19 +153,19 @@ while True:
             if opcao_menu_aluno == '1':
                 print("Digite o nome do aluno que deseja cadastrar: ")
                 nome_aluno = input(">>> ").strip().capitalize()
-                cadastro_aluno(nome_aluno)
+                cadastro(dicionario_aluno, nome_aluno)
             ## editar aluno
             elif opcao_menu_aluno == '2':
                 print("Digite a matricula do aluno que deseja editar: ")
                 matricula_editar_aluno = int(input(">>> "))
-                editar_aluno(matricula_editar_aluno)
+                editar(matricula_editar_aluno, dicionario_aluno)
             ## visualizar alunos
             elif opcao_menu_aluno == '3':
-                visualizar_alunos()
+                visualizar(dicionario_aluno)
             elif opcao_menu_aluno == '4':
                 print("Digite a matricula do aluno que deseja excluir: ")
                 matricula_excluir_aluno = int(input(">>> "))
-                excluir_aluno(matricula_excluir_aluno)
+                excluir(matricula_excluir_aluno, dicionario_aluno)
             elif opcao_menu_aluno == '0':
                 break
     elif opcao_menu_adm == '0':
