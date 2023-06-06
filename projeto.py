@@ -68,14 +68,19 @@ def editar(nome, dicionario):
         # verificando se existem mais de uma pessoa com esse nome
         conta_nomes = verifica_dois_nomes_iguais(nome, dicionario)
         if conta_nomes > 1:
+            # função para mostrar pessoas com nomes iguais ou parecidas
             mostrar_pessoas_nomes_iguais(nome, dicionario)
             print(f"Digite a matricula do(a) {nome} que deseja editar: ")
             matricula = input(">>> ")
             matricula = float(matricula)
-            print("Digite o novo nome da pessoa: ")
-            nome_pessoa = input(">>> ").strip().title()
-            dicionario[matricula] = nome_pessoa
-            print("Aluno editado com sucesso!")
+            flag_verifica_matricula = verifica_matricula(matricula, dicionario)
+            if flag_verifica_matricula:
+                print("Digite o novo nome da pessoa: ")
+                nome_pessoa = input(">>> ").strip().title()
+                dicionario[matricula] = nome_pessoa
+                print("Aluno editado com sucesso!")
+            else:
+                print("Matricula incorreta!")
         else:      
             ## percorro os valores
             for chave in dicionario.keys():
@@ -110,8 +115,12 @@ def excluir(nome, dicionario):
             print(f"Digite a matricula do(a) {nome} que deseja excluir: ")
             matricula = input(">>> ")
             matricula = float(matricula)
-            del dicionario[matricula]
-            print("Exclusão feita com sucesso!")
+            flag_verifica_matricula = verifica_matricula(matricula, dicionario)
+            if flag_verifica_matricula:
+                del dicionario[matricula]
+                print("Exclusão feita com sucesso!")
+            else:
+                print("Matricula incorreta!")
         else:      
             ## percorro os valores
             for chave in dicionario.keys():
@@ -133,25 +142,56 @@ def criar_turma(nome_disciplina, dicionario_aluno, dicionario_professor, diciona
         nome_professor = input(">>> ").strip().title()
         flag_verifica_professor = verifica_dicionario(nome_professor, dicionario_professor)
         if flag_verifica_professor == True:
-            if nome_disciplina in dicionario_turma:
-                print("Disciplina já cadastrada")
-            else:
-                dicionario_turma[nome_disciplina] = {}
-                lista_alunos = []
-                while True:
-                    print("Digite o nome do aluno que deseja adicionar na disciplina ou não para sair: ")
-                    nome_aluno = input(">>> ").strip().title()
-                    flag_verifica_aluno = False
-                    flag_verifica_aluno = verifica_dicionario(nome_aluno, dicionario_aluno)
-                    if flag_verifica_aluno:
-                        lista_alunos.append(nome_aluno)
-                    elif nome_aluno in 'Sair':
-                        break
+            conta_nomes = verifica_dois_nomes_iguais(nome_professor, dicionario_professor)
+            if conta_nomes > 1:
+                # função para mostrar pessoas com nomes iguais ou parecidas
+                mostrar_pessoas_nomes_iguais(nome_professor, dicionario_professor)
+                print(f"Digite a matricula do(a) {nome_professor} que deseja cadastrar em {nome_disciplina}: ")
+                matricula = input(">>> ")
+                matricula = float(matricula)
+                flag_verifica_matricula = verifica_matricula(matricula, dicionario_professor)
+                if flag_verifica_matricula:
+                    if nome_disciplina in dicionario_turma:
+                        print("Disciplina já cadastrada")
                     else:
-                        print("Aluno não está cadastrado")
-                dicionario_turma[nome_disciplina] = {nome_professor: [lista_alunos]}
-    else:
-        print("Não existem alunos ou professores cadastrados!")
+                        dicionario_turma[nome_disciplina] = {}
+                        lista_alunos = []
+                        while True:
+                            print("Digite o nome do aluno que deseja adicionar na disciplina ou não para sair: ")
+                            nome_aluno = input(">>> ").strip().title()
+                            flag_verifica_aluno = False
+                            flag_verifica_aluno = verifica_dicionario(nome_aluno, dicionario_aluno)
+                            if flag_verifica_aluno:
+                                conta_nomes = verifica_dois_nomes_iguais(nome_professor, dicionario_professor)
+                                if conta_nomes > 1:
+                                    mostrar_pessoas_nomes_iguais(nome_aluno, dicionario_aluno)
+                                    print(f"Digite a matricula do(a) {nome_aluno} que deseja cadastrar em {nome_disciplina}: ")
+                                    matricula = input(">>> ")
+                                    matricula = float(matricula)
+                                    flag_verifica_matricula_aluno = verifica_matricula(matricula, dicionario_aluno)
+                                    if flag_verifica_matricula_aluno:
+                                        lista_alunos.append(nome_aluno)
+                                    else:
+                                        print("Matricula incorreta")
+                                else:
+                                    lista_alunos.append(nome_aluno)
+                            elif nome_aluno in 'Sair':
+                                break
+                            else:
+                                print("Aluno não está cadastrado")
+                        dicionario_turma[nome_disciplina] = {nome_professor: [lista_alunos]}
+                else:
+                    print("Matricula incorreta!")
+            # else:
+            #     if nome_disciplina in dicionario_turma:
+            #         print("Disciplina já cadastrada")
+            #     else:
+            #         dicionario_turma[nome_disciplina] = {}
+            #         while True:
+            #             print("Digite o nome do aluno que deseja adicionar na disciplina ou não para sair: ")
+            #             nome_aluno = input(">>> ").strip().title()
+        else:
+            print("Não existem alunos ou professores cadastrados!")
 
 
 
@@ -174,6 +214,13 @@ def verifica_dicionario_vazio(dicionario):
         print("Não existem pessoas cadastradas")
     else:
         return True
+
+def verifica_matricula(matricula, dicionario):
+    flag = False
+    for chaves in dicionario.keys():
+        if chaves == matricula:
+            flag = True
+    return flag
 
 def verifica_dicionario(nome, dicionario):
     flag_verifica_dicionario_vazio = verifica_dicionario_vazio(dicionario) 
