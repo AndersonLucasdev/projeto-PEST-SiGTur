@@ -87,12 +87,24 @@ def editar(nome, dicionario):
         return flag_dicionario
 
 def visualizar(dicionario):
-    if len(dicionario) == 0:
-        print("Não há alunos cadastrados!")
+    if dicionario == dicionario_aluno and len(dicionario) == 0:
+        print(f"{' Não há alunos cadastrados! ':*^38}")
     else:
-        print(f"{'Matrícula':<10} | {'Nome':<25}")
-        for matricula, pessoas in dicionario.items():
-            print(f"{matricula:<10} | {pessoas:<25}")
+        if dicionario == dicionario_professor and len(dicionario) == 0:
+            print(f"{' Não há professores cadastrados! ':*^38}")
+        else:
+            if dicionario == dicionario_aluno:
+                print(f"{' Alunos ':-^38}")
+                print(f"{'Matrícula':<10} | {'Nome':<25}")
+                for matricula, pessoas in dicionario.items():
+                    print(f"{matricula:<10} | {pessoas:<25}")
+                return True
+            else:
+                print(f"{' Professores ':-^38}")
+                print(f"{'SIAPE':<10} | {'Nome':<25}")
+                for matricula, pessoas in dicionario.items():
+                    print(f"{matricula:<10} | {pessoas:<25}")
+                return True
 
 def excluir(nome, dicionario):
     flag_dicionario = verifica_dicionario(nome, dicionario)
@@ -116,12 +128,10 @@ def excluir(nome, dicionario):
 
 # funções turmas
 def criar_turma(nome_disciplina, dicionario_aluno, dicionario_professor, dicionario_turma):
-    verificar_dict_aluno = verifica_dicionario_vazio(dicionario_aluno)
-    verificar_dict_prof = verifica_dicionario_vazio(dicionario_professor)
+    verificar_dict_aluno = visualizar(dicionario_aluno)
+    print()
+    verificar_dict_prof = visualizar(dicionario_professor)
     if verificar_dict_aluno and verificar_dict_prof:
-        print(dicionario_aluno)
-        print(dicionario_professor) ## tobias faz
-        print()
         print("Digite o nome do professor que deseja adicionar na disciplina: ")
         nome_professor = input(">>> ").strip().title()
         flag_verifica_professor = verifica_dicionario(nome_professor, dicionario_professor)
@@ -144,6 +154,8 @@ def criar_turma(nome_disciplina, dicionario_aluno, dicionario_professor, diciona
                     while True:
                         print("Digite o nome do aluno que deseja adicionar na disciplina ou não para sair: ")
                         nome_aluno = input(">>> ").strip().title()
+                        if nome_aluno in 'Não':
+                            break
                         flag_verifica_aluno = False
                         flag_verifica_aluno = verifica_dicionario(nome_aluno, dicionario_aluno)
                         if flag_verifica_aluno:
@@ -153,14 +165,13 @@ def criar_turma(nome_disciplina, dicionario_aluno, dicionario_professor, diciona
                                 print("Confirmação!")
                             print(f"Digite a matricula do(a) {nome_aluno} que deseja cadastrar em {nome_disciplina}: ")
                             matricula = input(">>> ")
-                            matricula = float(matricula)
+                            matricula = int(matricula)
                             flag_verifica_matricula_aluno = verifica_matricula(matricula, dicionario_aluno)
+                            dicionario_matricula_e_aluno = {matricula: nome_aluno}
                             if flag_verifica_matricula_aluno:
-                                lista_alunos.append(nome_aluno)
+                                lista_alunos.append(dicionario_matricula_e_aluno)
                             else:
                                 print("Matricula incorreta")
-                        elif nome_aluno in 'Sair':
-                            break
                         else:
                             print("Aluno não está cadastrado")
                     dicionario_turma[nome_disciplina] = {nome_professor: [lista_alunos]}
@@ -168,6 +179,10 @@ def criar_turma(nome_disciplina, dicionario_aluno, dicionario_professor, diciona
                 print("Matricula incorreta!")
         else:
             print("Não existem alunos ou professores cadastrados!")
+
+def ver_turmas(nome_disciplina):
+    print(dicionario_turma[nome_disciplina])
+    #print(f"Professor: {dicionario_turma["Professor"]}")
 
 
 # verificações de pessoas com nomes iguais
@@ -179,10 +194,11 @@ def verifica_dois_nomes_iguais(nome, dicionario):
     return conta_nomes
 
 def mostrar_pessoas_nomes_iguais(nome, dicionario):
+    print(f"{'Matrícula':<10} | {'Nome':<25}")
     for matricula, pessoa in dicionario.items():
         if nome in pessoa:
-            print(f"{matricula:<10} | {pessoa:<25}")
-
+            print(f"{matricula:^10} | {pessoa:<25}")
+    
 ## funções de verificação
 def verifica_dicionario_vazio(dicionario):
     if len(dicionario) == 0:
@@ -210,25 +226,21 @@ def verifica_dicionario(nome, dicionario):
             print("A pessoa não está cadastrado!")
 
 def verifica_nome(nome):
-    return True
-    # flag =  True
-    # if ' ' in nome_aluno:
-    #     lista_aluno = nome_aluno.split(" ")
-    #     for elemento in lista_aluno:
-    #         if elemento.isalpha() == False:
-    #             flag = False
-    #         else:
-    #             print("O nome deve ser composto e não deve conter números.")
-    #     if flag == True:
-    #         return True
-    # else:
-    #     print("O nome deve ser composto e não deve conter números.")
+    flag = True
+    for caractere in nome:
+        if caractere in ['0','1','2','3','4','5','6','7','8','9']:
+            flag = False
+    if flag == False or nome.count(" ") == 0:
+        print("O nome deve ser composto e não deve conter números.")
+    else:
+        return True
 
 ## funções professor
 def visualizar_professor(nome, dicionario):
-    flag_verifica = verifica_dicionario(nome, dicionario)
-    if flag_verifica == True:
-        print(dicionario_professor[nome])
+    verifica_dicionario_professor = verifica_dicionario(nome, dicionario)
+    if verifica_dicionario_professor:
+        mostrar_pessoas_nomes_iguais(nome, dicionario)
+
 
 ## codigo principal
 while True:
@@ -242,6 +254,9 @@ while True:
             print("Digite o nome da disciplina: ")
             nome_disciplina = input(">>> ")
             criar_turma(nome_disciplina, dicionario_aluno, dicionario_professor, dicionario_turma)
+        elif opcao_menu_coordenador == '3':
+            nome_disciplina = input("Digite o nome da disciplina que deseja ver: ")
+            ver_turmas(nome_disciplina)
         else:
             print("Opção inválida! Digite um opção valida")
     
