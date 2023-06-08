@@ -105,28 +105,60 @@ def cadastro(dicionario, nome):
         print("Cadastro feito com sucesso")
 
 
-def editar_professor(nome, dicionario):
+def editar_professor(nome, dicionario_professor, dicionario_turmas):
     # verificando o dicionario
-    flag_dicionario = verifica_dicionario(nome, dicionario)
+    flag_dicionario = verifica_dicionario(nome, dicionario_professor)
     if flag_dicionario == True:
         # verificando se existem mais de uma pessoa com esse nome
-        conta_nomes = verifica_dois_nomes_iguais(nome, dicionario)
+        conta_nomes = verifica_dois_nomes_iguais(nome, dicionario_professor)
         # função para mostrar pessoas com nomes iguais ou parecidas
-        mostrar_pessoas_nomes_iguais(nome, dicionario)
+        mostrar_pessoas_nomes_iguais(nome, dicionario_professor)
         print()
         if conta_nomes == 1:
             print("Confirmação!")
         print(f"Digite a matricula do(a) {nome} que deseja editar: ")
         matricula = input(">>> ")
         matricula = int(matricula)
-        flag_verifica_matricula = verifica_matricula(matricula, dicionario)
+        flag_verifica_matricula = verifica_matricula(matricula, dicionario_professor)
         if flag_verifica_matricula:
-            print("Digite o novo nome da pessoa: ")
-            nome_pessoa = input(">>> ").strip().title()
-            dicionario[matricula] = nome_pessoa
-            print("Professor editado com sucesso!")
-            
-
+            if len(dicionario_turma) > 0:
+                flag_verifica_prof_em_disciplina = False
+                for disciplina in dicionario_turmas.keys():
+                    for matricula_prof_em_disciplina in dicionario_turmas[disciplina].keys():
+                        if matricula_prof_em_disciplina == matricula:
+                            flag_verifica_prof_em_disciplina = True
+                if flag_verifica_prof_em_disciplina:
+                    for chave_turma in dicionario_turmas.keys():
+                        if matricula in dicionario_turmas[chave_turma]:
+                            for chave_turma in dicionario_turmas.keys():
+                                flag_verifica_prof_em_disciplina = False
+                                for chave_prof in dicionario_turmas[chave_turma].keys():
+                                    if chave_prof == matricula:
+                                        copia_dicionario = dicionario_turmas[chave_turma][chave_prof][dicionario_professor[chave_prof]].copy()
+                                        print("Digite o novo nome da pessoa: ")
+                                        nome_pessoa = input(">>> ").strip().title()
+                                        flag_verifica_nome = verifica_nome(nome_pessoa)
+                                        if flag_verifica_nome:
+                                            del dicionario_turmas[chave_turma][chave_prof]
+                                            dicionario_turmas[chave_turma][chave_prof] = {nome_pessoa: copia_dicionario}
+                                            flag_verifica_prof_em_disciplina = True
+                                            break
+                                        else:
+                                            print("O nome deve ser composto e não deve conter números.")
+                                dicionario_professor[matricula] = nome_pessoa
+                                print("Professor editado com sucesso!")
+                        else:
+                            dicionario_professor[matricula] = nome_pessoa
+                            print("Professor editado com sucesso!")
+                else:
+                    print("Digite o novo nome da pessoa: ")
+                    nome_pessoa = input(">>> ").strip().title()
+                    flag_verifica_nome = verifica_nome(nome_pessoa)
+                    if flag_verifica_nome:
+                        dicionario_professor[matricula] = nome_pessoa
+                        print("Professor editado com sucesso!")
+                    else:
+                        print("O nome deve ser composto e não deve conter números.")
         else:
             print("Matricula incorreta!")
     else:
@@ -147,7 +179,7 @@ def editar_aluno(nome, dicionario):
         matricula = input(">>> ")
         matricula = int(matricula)
         flag_verifica_matricula = verifica_matricula(matricula, dicionario)
-        if flag_verifica_matricula:
+        if flag_verifica_matricula:   
             print("Digite o novo nome da pessoa: ")
             nome_pessoa = input(">>> ").strip().title()
             dicionario[matricula] = nome_pessoa
@@ -310,7 +342,6 @@ def adicionar_disciplina(dicionario_aluno, dicionario_prof, dicionario_turma):
                             print("Aluno não está cadastrado")
                     dicionario_turma[nome_disciplina] = {matricula_prof: {}}
                     dicionario_turma[nome_disciplina][matricula_prof] = {dicionario_professor[matricula_prof]: lista_alunos}
-                    # dicionario_turma[nome_disciplina] = {dicionario_professor[matricula_prof]: lista_alunos}
             else:
                 print("Matricula incorreta!")
         else:
@@ -409,7 +440,7 @@ while True:
             elif opcao_menu_professor == '2':
                 print("Digite o nome do professor que deseja editar: ")
                 nome_professor = input(">>> ").strip().title()
-                editar_professor(nome_professor, dicionario_professor)
+                editar_professor(nome_professor, dicionario_professor, dicionario_turma)
             elif opcao_menu_professor == '3':
                 print("Digite o nome do professor que gostaria de ver os dados")
                 nome_ver_dados_professor = input(">>> ").strip().title()
