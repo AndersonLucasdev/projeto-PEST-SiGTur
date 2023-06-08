@@ -228,7 +228,7 @@ def adicionar_disciplina(dicionario_aluno, dicionario_prof, dicionario_turma):
                                     print("Matrícula incorreta")
                         else:
                             print("Aluno não está cadastrado")
-                    dicionario_turma[nome_disciplina] = {dicionario_professor[matricula_prof]: [lista_alunos]}
+                    dicionario_turma[nome_disciplina] = {dicionario_professor[matricula_prof]: lista_alunos}
             else:
                 print("Matricula incorreta!")
         else:
@@ -307,7 +307,8 @@ while True:
         if opcao_menu_coordenador == '1':
             criar_turma(dicionario_aluno, dicionario_professor, dicionario_turma)
         elif opcao_menu_coordenador == '3':
-            nome_disciplina = input("Digite o nome da disciplina que deseja ver: ")
+            print("Digite o nome da disciplina que deseja ver: ")
+            nome_disciplina = input(">>> ").strip().title()
             ver_turmas(nome_disciplina)
         else:
             print("Opção inválida! Digite um opção valida")
@@ -329,9 +330,11 @@ while True:
                 nome_ver_dados_professor = input(">>> ").strip().title()
                 visualizar_professor(nome_ver_dados_professor, dicionario_professor)
             elif opcao_menu_professor == '4':
-                print("Digite o nome do profesosr que deseja excluir: ")
+                print("Digite o nome do professor que deseja excluir: ")
                 nome_professor = input(">>> ").strip().title()
                 excluir(nome_professor, dicionario_professor)
+            elif opcao_menu_professor == '5':
+                pass
             elif opcao_menu_professor == '0':
                 break
     elif opcao_menu_adm == '3':
