@@ -123,10 +123,12 @@ def editar_professor(nome, dicionario_professor, dicionario_turmas):
         if flag_verifica_matricula:
             if len(dicionario_turma) > 0:
                 flag_verifica_prof_em_disciplina = False
+                ## verifica se o professor tem disciplinas cadastradas
                 for disciplina in dicionario_turmas.keys():
                     for matricula_prof_em_disciplina in dicionario_turmas[disciplina].keys():
                         if matricula_prof_em_disciplina == matricula:
                             flag_verifica_prof_em_disciplina = True
+                ## se ele tiver
                 if flag_verifica_prof_em_disciplina:
                     for chave_turma in dicionario_turmas.keys():
                         if matricula in dicionario_turmas[chave_turma]:
@@ -241,6 +243,9 @@ def excluir_professor(nome, dicionario_professor, dicionario_turmas):
                 for turma in turmas_a_remover:
                     del dicionario_turmas[turma]
 
+                del dicionario_professor[matricula]
+                print("Exclusão feita com sucesso!")
+            else:
                 del dicionario_professor[matricula]
                 print("Exclusão feita com sucesso!")
                 
