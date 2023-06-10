@@ -126,25 +126,29 @@ def editar_professor(nome, dicionario_professor, dicionario_turmas, nome_do_arqu
             # verifico se o prof está em alguma disciplina
             flag_verifica_prof_em_disciplina = verficia_prof_em_disciplina(matricula, dicionario_turmas)
             if len(dicionario_turma) > 0 and flag_verifica_prof_em_disciplina:
-                # percorro as disciplinas
-                for chave_turma in dicionario_turmas.keys():
-                    flag_verifica_prof_em_disciplina = False
-                    # percorro as matriculas dos
-                    for chave_prof in dicionario_turmas[chave_turma].keys():
-                        if chave_prof == matricula:
-                            copia_dicionario = dicionario_turmas[chave_turma][chave_prof][dicionario_professor[chave_prof]].copy()
-                            print("Digite o novo nome da pessoa: ")
-                            nome_pessoa = input(">>> ").strip().title()
-                            flag_verifica_nome = verifica_nome(nome_pessoa)
-                            if flag_verifica_nome:
+                print("Digite o novo nome da pessoa: ")
+                nome_pessoa = input(">>> ").strip().title()
+                flag_verifica_nome = verifica_nome(nome_pessoa)
+                if flag_verifica_nome:
+                    # percorro as disciplinas
+                    for chave_turma in dicionario_turmas.keys():
+                        # percorro as matriculas dos
+                        for chave_prof in dicionario_turmas[chave_turma].keys():
+                            if chave_prof == matricula:
+                                copia_dicionario = dicionario_turmas[chave_turma][chave_prof][dicionario_professor[chave_prof]].copy()
                                 del dicionario_turmas[chave_turma][chave_prof]
                                 dicionario_turmas[chave_turma][chave_prof] = {nome_pessoa: copia_dicionario}
-                                flag_verifica_prof_em_disciplina = True
+                                flag_confirma_alteracao = True
                                 break
-                            else:
-                                print("O nome deve ser composto e não deve conter números.")
-                    dicionario_professor[matricula] = nome_pessoa
-                    print("Professor editado com sucesso!")
+                    if flag_confirma_alteracao:
+                        nome_do_arquivo = 'dicionario_turma'
+                        salvar_dicionarios(dicionario_turma, nome_do_arquivo)
+                        dicionario_professor[matricula] = nome_pessoa
+                        nome_do_arquivo = 'dicionario_professor'
+                        salvar_dicionarios(dicionario_professor, nome_do_arquivo)
+                        print("Professor editado com sucesso!")
+                else:
+                    print("O nome deve ser composto e não deve conter números.")
             else:
                 print("Digite o novo nome da pessoa: ")
                 nome_pessoa = input(">>> ").strip().title()
