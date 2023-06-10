@@ -132,7 +132,7 @@ def editar_professor(nome, dicionario_professor, dicionario_turmas, nome_do_arqu
                 if flag_verifica_nome:
                     # percorro as disciplinas
                     for chave_turma in dicionario_turmas.keys():
-                        # percorro as matriculas dos
+                        # percorro as matriculas dos prof
                         for chave_prof in dicionario_turmas[chave_turma].keys():
                             if chave_prof == matricula:
                                 copia_dicionario = dicionario_turmas[chave_turma][chave_prof][dicionario_professor[chave_prof]].copy()
@@ -164,7 +164,7 @@ def editar_professor(nome, dicionario_professor, dicionario_turmas, nome_do_arqu
     else:
         return flag_dicionario
 
-def editar_aluno(nome, dicionario_aluno, dicionario_turma, nome_do_arquivo):
+def editar_aluno(nome, dicionario_aluno, dicionario_turmas, nome_do_arquivo):
     # verificando o dicionario
     flag_dicionario = verifica_dicionario(nome, dicionario_aluno)
     if flag_dicionario == True:
@@ -178,21 +178,37 @@ def editar_aluno(nome, dicionario_aluno, dicionario_turma, nome_do_arquivo):
         print(f"Digite a matricula do(a) {nome} que deseja editar: ")
         matricula = input(">>> ")
         flag_verifica_matricula = verifica_matricula(matricula, dicionario_aluno)
-        if flag_verifica_matricula:   
+        if flag_verifica_matricula:
+            flag_verifica_prof_em_disciplina = verficia_prof_em_disciplina(matricula, dicionario_turmas)
             print("Digite o novo nome da pessoa: ")
             nome_pessoa = input(">>> ").strip().title()
             flag_dicionario = verifica_nome(nome_pessoa)
             if flag_dicionario:
-                dicionario_aluno[matricula] = nome_pessoa
-                print("Aluno editado com sucesso!")
-                salvar_dicionarios(dicionario_aluno, nome_do_arquivo)
+                if len(dicionario_turma) > 0 and flag_verifica_prof_em_disciplina:
+                    # percorre disciplinas
+                    for chave_turma in dicionario_turmas.keys():
+                        # percorre matricula
+                        for chave_prof, nome_prof in dicionario_turmas[chave_turma].items():
+                            # percorre os alunos desse professor
+                            for prof in nome_prof.keys():
+                                for alunos in dicionario_turmas[chave_turma][chave_prof][prof]:
+                                    for chave_aluno in alunos.keys():
+                                        if chave_aluno == matricula:
+                                            alunos[matricula] = nome_pessoa
+                    nome_do_arquivo = 'dicionario_aluno'     
+                    dicionario_aluno[matricula] = nome_pessoa
+                    salvar_dicionarios(dicionario_aluno, nome_do_arquivo)
+                    print("Aluno editado com sucesso!")
+                    nome_do_arquivo = 'dicionario_turma'
+                    salvar_dicionarios(dicionario_turmas, nome_do_arquivo)
+                else:
+                    dicionario_aluno[matricula] = nome_pessoa
+                    print("Aluno editado com sucesso!")
+                    salvar_dicionarios(dicionario_aluno, nome_do_arquivo)
             else:
                 print("O nome deve ser composto e não deve conter números.")
         else:
             print("Matricula incorreta!")
-    else:
-        return flag_dicionario
-
 
 def visualizar_alunos_e_professor(dicionario_aluno, dicionario_prof):
     flag_aluno = verifica_dicionario_vazio(dicionario_aluno)
@@ -279,17 +295,23 @@ def excluir_aluno(nome, dicionario_aluno, dicionario_turmas, dicionario_professo
                     flag_verifica_aluno_em_disciplina = verifica_aluno_em_disciplina(matricula, dicionario_turmas, dicionario_professores)
                     # verifico se o aluno está em alguma disciplina
                     if flag_verifica_aluno_em_disciplina:
-                        # percorro as disciplinas
+                        #percorro as disciplinas
                         for chave_turma in dicionario_turmas.keys():
                             # percorro a matricula prof e o nome dele
                             for chave_prof, nome_prof in dicionario_turmas[chave_turma].items():
-                                for chave_aluno in dicionario_turmas[chave_turma][nome_prof].keys():
-                                    if chave_aluno == matricula:
-                                        del dicionario_turmas[chave_turma][nome_professor][chave_aluno]
+                                # percorre os alunos desse professor
+                                for prof in nome_prof.keys():
+                                    for alunos in dicionario_turmas[chave_turma][chave_prof][prof]:
+                                        for chave_aluno in alunos.keys():
+                                            if chave_aluno == matricula:
+                                                # dicionario_turmas[chave_turma][chave_prof][prof].remove(dicionario_turmas[chave_turma][chave_prof][prof][alunos])
+                                                dicionario_turmas[chave_turma][chave_prof][prof].remove(alunos)
+
                         nome_do_arquivo = 'dicionario_turma'
-                        salvar_dicionarios(dicionario_aluno, nome_do_arquivo)
+                        salvar_dicionarios(dicionario_turmas, nome_do_arquivo)
                         del dicionario_aluno[matricula]
                         print("Exclusão feita com sucesso!")
+                        nome_do_arquivo = 'dicionario_aluno'
                         salvar_dicionarios(dicionario_aluno, nome_do_arquivo)
                     # se não, só deletar o aluno do dicionario alunos
                     else:
@@ -458,17 +480,21 @@ def verficia_prof_em_disciplina(matricula, dicionario):
 
 def verifica_aluno_em_disciplina(matricula, dicionario_turmas, dicionario_professores):
     flag_verifica_aluno_em_disciplina = False
-    # percorro as disciplinas
+    # percorre as disciplinas
     for chave_turma in dicionario_turmas.keys():
-        # percorro a matricula prof no dicionario turmas
+    # percorrer as matrículas dos professores no dicionário turmas
         for chave_prof in dicionario_turmas[chave_turma].keys():
-            # percorro matriculas dos prof no dicionario prof
-            for matricula_prof in dicionario_professores.keys():
-                # se matricula prof está na matricula prof em dicionario turmas
+            # percorrer as matrículas dos professores no dicionário de professores
+            for matricula_prof, nome_prof in dicionario_professores.items():
+                # verificar se a matrícula do professor está presente no dicionário de turmas
                 if matricula_prof == chave_prof:
-                    for chave_aluno in dicionario_turmas[chave_turma][dicionario_professores[matricula_prof]].keys():
-                        if chave_aluno == matricula:
-                            flag_verifica_aluno_em_disciplina = True
+                    # percorre os alunos daquele professor
+                    for aluno in dicionario_turmas[chave_turma][chave_prof][nome_prof]:
+                        # percorre a matricula daquele aluno
+                        for chave_aluno in aluno.keys():
+                            # verifica se a matricula do aluno for igual a matricula digitada
+                            if chave_aluno == matricula:
+                                flag_verifica_aluno_em_disciplina = True
     if flag_verifica_aluno_em_disciplina == True:
         return True
                     
