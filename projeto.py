@@ -8,7 +8,6 @@ def descarregar_dicionario(nome_arquivo):
     with open(f'{nome_arquivo}.json', 'r') as file:
         return json.load(file)
 
-
 # chave coordenador
 dicionario_turma = descarregar_dicionario('dicionario_turma')
 
@@ -88,8 +87,6 @@ def menu_aluno():
     print("Escolha uma opção: ")
     return input(">>> ").strip()
 
-
-
 # funções aluno
 def cadastro(dicionario, nome, nome_do_arquivo):
     flag_dicionario = verifica_nome(nome)
@@ -97,6 +94,7 @@ def cadastro(dicionario, nome, nome_do_arquivo):
         if dicionario:
             for keys in dicionario.keys():
                 matricula = keys
+            # transformo para numero somo e transformo para str de novo
             matricula = int(matricula)
             matricula += 1
             matricula = str(matricula)
@@ -129,18 +127,22 @@ def editar_professor(nome, dicionario_professor, dicionario_turmas, nome_do_arqu
                 print("Digite o novo nome da pessoa: ")
                 nome_pessoa = input(">>> ").strip().title()
                 flag_verifica_nome = verifica_nome(nome_pessoa)
+                # verifica se o nome está no padrão
                 if flag_verifica_nome:
                     # percorro as disciplinas
                     for chave_turma in dicionario_turmas.keys():
                         # percorro as matriculas dos prof
                         for chave_prof in dicionario_turmas[chave_turma].keys():
                             if chave_prof == matricula:
+                                # guardo os valores, excluo o professor antigo
                                 copia_dicionario = dicionario_turmas[chave_turma][chave_prof][dicionario_professor[chave_prof]].copy()
                                 del dicionario_turmas[chave_turma][chave_prof]
+                                # coloco o novo professor com a copia dos valores
                                 dicionario_turmas[chave_turma][chave_prof] = {nome_pessoa: copia_dicionario}
                                 flag_confirma_alteracao = True
                                 break
                     if flag_confirma_alteracao:
+                        # salvo no json turma e professor
                         nome_do_arquivo = 'dicionario_turma'
                         salvar_dicionarios(dicionario_turma, nome_do_arquivo)
                         dicionario_professor[matricula] = nome_pessoa
@@ -150,6 +152,7 @@ def editar_professor(nome, dicionario_professor, dicionario_turmas, nome_do_arqu
                 else:
                     print("O nome deve ser composto e não deve conter números.")
             else:
+                # só mudo no dicionario e json professor
                 print("Digite o novo nome da pessoa: ")
                 nome_pessoa = input(">>> ").strip().title()
                 flag_verifica_nome = verifica_nome(nome_pessoa)
@@ -178,7 +181,9 @@ def editar_aluno(nome, dicionario_aluno, dicionario_turmas, nome_do_arquivo):
         print(f"Digite a matricula do(a) {nome} que deseja editar: ")
         matricula = input(">>> ")
         flag_verifica_matricula = verifica_matricula(matricula, dicionario_aluno)
+        # verifica se a matricula está cadastrada
         if flag_verifica_matricula:
+            # verifica se o prof está em alguma disciplina
             flag_verifica_prof_em_disciplina = verficia_prof_em_disciplina(matricula, dicionario_turmas)
             print("Digite o novo nome da pessoa: ")
             nome_pessoa = input(">>> ").strip().title()
@@ -193,8 +198,11 @@ def editar_aluno(nome, dicionario_aluno, dicionario_turmas, nome_do_arquivo):
                             for prof in nome_prof.keys():
                                 for alunos in dicionario_turmas[chave_turma][chave_prof][prof]:
                                     for chave_aluno in alunos.keys():
+                                        # se a matricula e a matricula do aluno na disciplina for igual
                                         if chave_aluno == matricula:
+                                            # muda com o novo nome
                                             alunos[matricula] = nome_pessoa
+                    # muda nos dicionarios e json no aluno e turma
                     nome_do_arquivo = 'dicionario_aluno'     
                     dicionario_aluno[matricula] = nome_pessoa
                     salvar_dicionarios(dicionario_aluno, nome_do_arquivo)
@@ -202,6 +210,7 @@ def editar_aluno(nome, dicionario_aluno, dicionario_turmas, nome_do_arquivo):
                     nome_do_arquivo = 'dicionario_turma'
                     salvar_dicionarios(dicionario_turmas, nome_do_arquivo)
                 else:
+                    # muda apenas no json e dicionario aluno
                     dicionario_aluno[matricula] = nome_pessoa
                     print("Aluno editado com sucesso!")
                     salvar_dicionarios(dicionario_aluno, nome_do_arquivo)
@@ -234,6 +243,7 @@ def visualizar_aluno(dicionario):
         print(f"{' Não há alunos cadastrados! ':*^38}")
 
 def excluir_professor(nome, dicionario_professor, dicionario_turmas, nome_do_arquivo):
+    # verificações no dicionario
     flag_dicionario = verifica_dicionario(nome, dicionario_professor)
     if flag_dicionario == True:
         conta_nomes = verifica_dois_nomes_iguais(nome, dicionario_professor)
@@ -242,7 +252,8 @@ def excluir_professor(nome, dicionario_professor, dicionario_turmas, nome_do_arq
             print("Confirmação!")
         # percorrendo as pessoas com esse nome
         print(f"Digite a matricula do(a) {nome} que deseja excluir: ")
-        matricula = input(">>> ")
+        matricula = input(">>> ").strip()
+        # verificações na matricula
         flag_verifica_matricula = verifica_matricula(matricula, dicionario_professor)
         if flag_verifica_matricula:
             # verifica prof em dicionario turmas
@@ -258,9 +269,12 @@ def excluir_professor(nome, dicionario_professor, dicionario_turmas, nome_do_arq
                         if chave_prof == matricula:
                             flag_verifica_prof_em_disciplina = True
                         if flag_verifica_prof_em_disciplina:
+                            # adiciona a disciplina na lista de disciplinas
                             turmas_a_remover.append(chave_turma)
                 for turma in turmas_a_remover:
+                    # percorro a lista de disciplinas deletando-a
                     del dicionario_turmas[turma]
+                # salvo no json e dicionario turma e professor
                 nome_do_arquivo = 'dicionario_turma'
                 salvar_dicionarios(dicionario_turmas, nome_do_arquivo)
                 del dicionario_professor[matricula]
@@ -268,6 +282,7 @@ def excluir_professor(nome, dicionario_professor, dicionario_turmas, nome_do_arq
                 nome_do_arquivo = 'dicionario_professor'
                 salvar_dicionarios(dicionario_professor, nome_do_arquivo)
             else:
+                # salvo no json e dicionario apenas do professor
                 del dicionario_professor[matricula]
                 print("Exclusão feita com sucesso!")
                 salvar_dicionarios(dicionario_professor, nome_do_arquivo)
@@ -278,6 +293,7 @@ def excluir_professor(nome, dicionario_professor, dicionario_turmas, nome_do_arq
         flag_dicionario
 
 def excluir_aluno(nome, dicionario_aluno, dicionario_turmas, dicionario_professores, nome_do_arquivo):
+    # verificações no dicionario
     flag_dicionario = verifica_dicionario(nome, dicionario_aluno)
     if flag_dicionario == True:
         conta_nomes = verifica_dois_nomes_iguais(nome, dicionario_aluno)
@@ -286,14 +302,15 @@ def excluir_aluno(nome, dicionario_aluno, dicionario_turmas, dicionario_professo
             print("Confirmação!")
         # percorrendo as pessoas com esse nome
         print(f"Digite a matricula do(a) {nome} que deseja excluir: ")
-        matricula = input(">>> ")
+        matricula = input(">>> ").strip()
+        # verificações na matricula
         flag_verifica_matricula = verifica_matricula(matricula, dicionario_aluno)
         if flag_verifica_matricula:
             # verifico se existe alguma disciplina
             if len(dicionario_turmas) > 0:
                 if len(dicionario_professor) > 0:
+                    # verifica se o aluno está matriculado em alguma disciplina
                     flag_verifica_aluno_em_disciplina = verifica_aluno_em_disciplina(matricula, dicionario_turmas, dicionario_professores)
-                    # verifico se o aluno está em alguma disciplina
                     if flag_verifica_aluno_em_disciplina:
                         #percorro as disciplinas
                         for chave_turma in dicionario_turmas.keys():
@@ -303,10 +320,12 @@ def excluir_aluno(nome, dicionario_aluno, dicionario_turmas, dicionario_professo
                                 for prof in nome_prof.keys():
                                     for alunos in dicionario_turmas[chave_turma][chave_prof][prof]:
                                         for chave_aluno in alunos.keys():
+                                            # se matricula no turmas igual matricula do aluno no dict alunos
                                             if chave_aluno == matricula:
                                                 # dicionario_turmas[chave_turma][chave_prof][prof].remove(dicionario_turmas[chave_turma][chave_prof][prof][alunos])
+                                                # removo o aluno do dicionario turmas
                                                 dicionario_turmas[chave_turma][chave_prof][prof].remove(alunos)
-
+                        # salvos as alterações no dicionario e json turma e aluno
                         nome_do_arquivo = 'dicionario_turma'
                         salvar_dicionarios(dicionario_turmas, nome_do_arquivo)
                         del dicionario_aluno[matricula]
@@ -315,12 +334,14 @@ def excluir_aluno(nome, dicionario_aluno, dicionario_turmas, dicionario_professo
                         salvar_dicionarios(dicionario_aluno, nome_do_arquivo)
                     # se não, só deletar o aluno do dicionario alunos
                     else:
+                        # deleto e salvo apenas no dicionario e json do aluno
                         del dicionario_aluno[matricula]
                         print("Exclusão feita com sucesso!")
                         salvar_dicionarios(dicionario_aluno, nome_do_arquivo)
 
             # se não existir só deleta o aluno no dicionario aluno
             else:
+                # deleto e salvo apenas no dicionario e json do aluno
                 del dicionario_aluno[matricula]
                 print("Exclusão feita com sucesso!")
                 salvar_dicionarios(dicionario_aluno, nome_do_arquivo)
@@ -331,6 +352,7 @@ def excluir_aluno(nome, dicionario_aluno, dicionario_turmas, dicionario_professo
 
 # funções turmas
 def criar_turma(dicionario_aluno, dicionario_professor, dicionario_turma, nome_do_arquivo):
+    # verifico o menu criar turmas
     while True:
         opcao_menu_coordenador_criar_turma = menu_coordenador_criar_turma()
         if opcao_menu_coordenador_criar_turma == '1':
@@ -343,6 +365,7 @@ def criar_turma(dicionario_aluno, dicionario_professor, dicionario_turma, nome_d
             print("Opção inválida! Digite um opção valida")
 
 def adicionar_disciplina(dicionario_aluno, dicionario_prof, dicionario_turma, nome_do_arquivo):
+    # faço verificações nos dicionarios
     flag_aluno = verifica_dicionario_vazio(dicionario_aluno)
     flag_prof = verifica_dicionario_vazio(dicionario_prof)
     if flag_aluno and flag_prof:
@@ -350,6 +373,7 @@ def adicionar_disciplina(dicionario_aluno, dicionario_prof, dicionario_turma, no
         nome_disciplina = input(">>> ").strip().title()
         print("Digite o nome do professor que deseja adicionar na disciplina: ")
         nome_professor = input(">>> ").strip().title()
+        # verifico se o prof está cadastrado
         flag_verifica_professor = verifica_dicionario(nome_professor, dicionario_professor)
         if flag_verifica_professor == True:
             conta_nomes = verifica_dois_nomes_iguais(nome_professor, dicionario_professor)
@@ -359,7 +383,9 @@ def adicionar_disciplina(dicionario_aluno, dicionario_prof, dicionario_turma, no
                 print("Confirmação!")
             print(f"Digite a matricula do(a) {nome_professor} que deseja cadastrar em {nome_disciplina}: ")
             matricula_prof = input(">>> ").strip()
+            # verifico se a matricula existe
             flag_verifica_matricula = verifica_matricula(matricula_prof, dicionario_professor)
+            # verifico se a disciplina já foi cadastrada
             if flag_verifica_matricula:
                 if nome_disciplina in dicionario_turma:
                     print("Disciplina já cadastrada")
@@ -369,11 +395,12 @@ def adicionar_disciplina(dicionario_aluno, dicionario_prof, dicionario_turma, no
                     while True:
                         print("Digite o nome do aluno que deseja adicionar na disciplina ou não para sair: ")
                         nome_aluno = input(">>> ").strip().title()
-                        if nome_aluno in 'Não' and len(lista_alunos) != 0:
+                        if nome_aluno in 'Não':
                             break
                         else:
                             print("É necessário adicionar pelo menos um aluno!")
                         flag_verifica_aluno = False
+                        # verifico se o aluno está cadastrado
                         flag_verifica_aluno = verifica_dicionario(nome_aluno, dicionario_aluno)
                         if flag_verifica_aluno:
                             conta_nomes = verifica_dois_nomes_iguais(nome_professor, dicionario_professor)
@@ -382,22 +409,27 @@ def adicionar_disciplina(dicionario_aluno, dicionario_prof, dicionario_turma, no
                                 print("Confirmação!")
                             print(f"Digite a matricula do(a) {nome_aluno} que deseja cadastrar em {nome_disciplina}: ")
                             matricula_aluno = input(">>> ").strip()
+                            # verifica se a matricula do aluno existe
                             flag_verifica_matricula_aluno = verifica_matricula(matricula_aluno, dicionario_aluno)
+                            # um dicionario apenas com a matricula do aluno e o nome dele
                             dicionario_matricula_e_aluno = {matricula_aluno: dicionario_aluno[matricula_aluno]}
                             flag_verifica_cadastro = False
                             if len(lista_alunos) == 0:
                                 flag_verifica_cadastro = False
                             else:
                                 for cadastro in lista_alunos:
+                                    # se a matricula do aluno for igual a matricula do aluno na disciplina ele já foi cadastrado
                                     if cadastro == dicionario_matricula_e_aluno:
                                         flag_verifica_cadastro = True
                             if flag_verifica_cadastro:
                                 print("Aluno já cadastrado")
                             else:
                                 if flag_verifica_matricula_aluno:
+                                    # adiciono o dicionario com a matricula do aluno e o seu nome na lista de alunos
                                     lista_alunos.append(dicionario_matricula_e_aluno)
                                 else:
                                     print("Matrícula incorreta")
+                    # modifico no dicionario e no json turma, adicionando no diconario a lista de alunos (matricula e nome)
                     dicionario_turma[nome_disciplina] = {matricula_prof: {}}
                     dicionario_turma[nome_disciplina][matricula_prof] = {dicionario_professor[matricula_prof]: lista_alunos}
                     salvar_dicionarios(dicionario_turma, nome_do_arquivo)
@@ -414,6 +446,7 @@ def ver_turmas(nome_disciplina):
 # verificações de pessoas com nomes iguais
 def verifica_dois_nomes_iguais(nome, dicionario):
     conta_nomes = 0
+    # verifico se existem mais de uma pessoa com o mesmo nome
     for valores in dicionario.values():
         if nome in valores:
             conta_nomes += 1
@@ -434,12 +467,14 @@ def verifica_dicionario_vazio(dicionario):
 
 def verifica_matricula(matricula, dicionario):
     flag = False
+    # verifico se a matricula existe no dicionario
     for chaves in dicionario.keys():
         if chaves == matricula:
             flag = True
     return flag
 
 def verifica_dicionario(nome, dicionario):
+    # verifico se o dicionario é vazio e se a pessoa existe no dicionario
     flag_verifica_dicionario_vazio = verifica_dicionario_vazio(dicionario) 
     if flag_verifica_dicionario_vazio:
         flag = False
@@ -452,6 +487,7 @@ def verifica_dicionario(nome, dicionario):
             print("A pessoa não está cadastrado!")
 
 def verifica_nome(nome):
+    # verifica se o nome antiga a norma padrão (composto e sem números)
     flag = True
     for caractere in nome:
         if caractere in ['0','1','2','3','4','5','6','7','8','9']:
@@ -471,6 +507,7 @@ def visualizar_professor(nome, dicionario):
 
 def verficia_prof_em_disciplina(matricula, dicionario):
     flag_verifica_prof_em_disciplina = False
+    # verifico se o prof está cadastrado em alguma disciplina
     for chave_turma in dicionario.keys():
         for chave_prof in dicionario[chave_turma].keys():
             if chave_prof == matricula:
@@ -497,9 +534,6 @@ def verifica_aluno_em_disciplina(matricula, dicionario_turmas, dicionario_profes
                                 flag_verifica_aluno_em_disciplina = True
     if flag_verifica_aluno_em_disciplina == True:
         return True
-                    
-        
-
 
 ## codigo principal
 while True:
