@@ -1,5 +1,7 @@
 import json
 
+## oii
+
 # funções para json
 def salvar_dicionarios(dicionario, nome_do_arquivo):
     with open(f'{nome_do_arquivo}.json', 'w') as file:
@@ -111,7 +113,7 @@ def cadastro(dicionario, nome, nome_do_arquivo):
             matricula += 1
             matricula = str(matricula)
         else:
-            matricula = 1
+            matricula = '1'
         dicionario[matricula] = nome
         salvar_dicionarios(dicionario, nome_do_arquivo)
         dicionario = descarregar_dicionario(nome_do_arquivo)
@@ -428,8 +430,6 @@ def adicionar_disciplina(dicionario_aluno, dicionario_prof, dicionario_turma, no
                         nome_aluno = input(">>> ").strip().title()
                         if nome_aluno in 'Não':
                             break
-                        else:
-                            print("É necessário adicionar pelo menos um aluno!")
                         flag_verifica_aluno = False
                         # verifico se o aluno está cadastrado
                         flag_verifica_aluno = verifica_dicionario(nome_aluno, dicionario_aluno)
@@ -575,7 +575,7 @@ def verifica_matricula(matricula, dicionario):
     flag = False
     # verifico se a matricula existe no dicionario
     for chaves in dicionario.keys():
-        if chaves == matricula:
+        if str(chaves) == matricula:
             flag = True
     return flag
 
