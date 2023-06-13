@@ -378,12 +378,19 @@ def excluir_professor(nome, dicionario_professor, dicionario_turmas, nome_do_arq
 
 
 
-def visualizar_turmas_professor_especifico(nome_professor, dicionario_professor, dicionario_turma):
-    flag_visualizar_turmas_professor_especifico = visualizar_turmas_professor_especifico(dicionario_professor, dicionario_turma)
-    if flag_visualizar_turmas_professor_especifico:
 
-        
-def visualizar_turmas_professor_especifico(dicionario_professor, dicionario_turma):
+def visualizar_turmas_professor_especifico(nome_professor, dicionario_professor, dicionario_turma):
+    flag_verifica_visualizar_turmas_professor_especifico = verifica_visualizar_turmas_professor_especifico(dicionario_professor, dicionario_turma)
+    if flag_verifica_visualizar_turmas_professor_especifico:
+        flag_pesquisa_visualizar_turmas_professor_especifico, matricula = pesquisa_visualizar_turmas_professor_especifico(nome_professor, dicionario_professor)
+        if flag_pesquisa_visualizar_turmas_professor_especifico:
+            flag_verifica_prof_em_disciplina = verficia_prof_em_disciplina(matricula, dicionario_turma)
+            if flag_verifica_prof_em_disciplina:
+                visualizar_turmas_professor_especifico_funcao(matricula, dicionario_turma)
+            else:
+                print("Professor não tem disciplinas cadastradas!")
+
+def verifica_visualizar_turmas_professor_especifico(dicionario_professor, dicionario_turma):
     flag_verifica_dicionario_vazio_professor = verifica_dicionario_vazio(dicionario_professor)
     if flag_verifica_dicionario_vazio_professor:
         flag_verifica_dicionario_vazio_turma = verifica_dicionario_vazio(dicionario_turma)
@@ -393,6 +400,74 @@ def visualizar_turmas_professor_especifico(dicionario_professor, dicionario_turm
             print("Não existem turmas cadastradas!")
     else:
         print("Não existem professores cadastrados!")
+
+def pesquisa_visualizar_turmas_professor_especifico(nome_professor, dicionario_professor):
+    conta_nomes = verifica_dois_nomes_iguais(nome_professor, dicionario_professor)
+    mostrar_pessoas_nomes_iguais(nome_professor, dicionario_professor)
+    if conta_nomes == 1:
+        print("Confirmação!")
+    # percorrendo as pessoas com esse nome
+    print(f"Digite a matricula do(a) {nome_professor} que deseja visualizar: ")
+    matricula = input(">>> ").strip()
+    # verificações na matricula
+    flag_verifica_matricula = verifica_matricula(matricula, dicionario_professor)
+    # verifica se o prof digitado existe em dict prof
+    if flag_verifica_matricula:
+        return True, matricula
+
+def visualizar_turmas_professor_especifico_funcao(matricula, dicionario_turmas):
+    print("Disciplinas: ")
+    for nome_disciplina in dicionario_turmas.keys():
+        for matricula_prof in dicionario_turmas[nome_disciplina].keys():
+            if int(matricula_prof) == int(matricula):
+                print(f"{nome_disciplina.upper()}")
+
+
+
+
+def visualizar_alunos_professor_especifico(nome_professor, dicionario_professor, dicionario_turma):
+    flag_verifica_tudo_visualizar_alunos_professor_especifico, matricula = verifica_tudo_visualizar_alunos_professor_especifico(nome_professor, dicionario_professor, dicionario_turma)
+    if flag_verifica_tudo_visualizar_alunos_professor_especifico:
+            lista_alunos_em_professor = adiciona_aluno_em_lista_para_ser_percorrida(matricula, dicionario_turma, dicionario_aluno)
+            percorre_lista_alunos_professor_especifico(lista_alunos_em_professor)
+
+
+# funções para auxiliar o visualizar_alunos_professor_especifico
+def verifica_tudo_visualizar_alunos_professor_especifico(nome_professor, dicionario_professor, dicionario_turma):
+    flag_verifica_visualizar_turmas_professor_especifico = verifica_visualizar_turmas_professor_especifico(dicionario_professor, dicionario_turma)
+    if flag_verifica_visualizar_turmas_professor_especifico:
+        flag_pesquisa_visualizar_turmas_professor_especifico, matricula = pesquisa_visualizar_turmas_professor_especifico(nome_professor, dicionario_professor)
+        if flag_pesquisa_visualizar_turmas_professor_especifico:
+            flag_verifica_prof_em_disciplina = verficia_prof_em_disciplina(matricula, dicionario_turma)
+            if flag_verifica_prof_em_disciplina:
+                return True, matricula
+
+
+def adiciona_aluno_em_lista_para_ser_percorrida(matricula, dicionario_turma, dicionario_aluno):
+    lista_alunos_em_professor = []
+    # adicionar a lista apenas os alunos do prof
+    for chave_turma in dicionario_turma.keys():
+        # percorro a matricula prof e o nome dele
+        for chave_prof, nome_prof in dicionario_turma[chave_turma].items():
+            # percorre os alunos desse professor
+            for prof in nome_prof.keys():
+                for alunos in dicionario_turma[chave_turma][chave_prof][prof]:
+                    for chave_aluno in alunos.keys():
+                        # se matricula no turmas igual matricula do aluno no dict alunos
+                        if int(chave_aluno) == int(matricula):
+                            dicionario_aluno = {matricula: dicionario_aluno[matricula]}
+                            # verifica se o aluno já foi cadastrado
+                            if dicionario_aluno not in lista_alunos_em_professor:   
+                                lista_alunos_em_professor.append(dicionario_aluno)    
+    return lista_alunos_em_professor
+
+def percorre_lista_alunos_professor_especifico(lista_alunos_em_professor):
+    print(f"{'Matrícula:':<12} Aluno:")
+    for aluno in lista_alunos_em_professor:
+        for matricula_alunos, nome_aluno in aluno.items():
+            print(f"{matricula_alunos:<12}",nome_aluno)
+
+
 
 # funções turmas
 def criar_turma(dicionario_aluno, dicionario_professor, dicionario_turma, nome_do_arquivo):
@@ -766,7 +841,7 @@ def verficia_prof_em_disciplina(matricula, dicionario):
     # verifico se o prof está cadastrado em alguma disciplina
     for chave_turma in dicionario.keys():
         for chave_prof in dicionario[chave_turma].keys():
-            if chave_prof == matricula:
+            if int(chave_prof) == int(matricula):
                 flag_verifica_prof_em_disciplina = True
     if flag_verifica_prof_em_disciplina:
         return True
@@ -851,7 +926,9 @@ while True:
                 visualizar_turmas_professor_especifico(nome_professor, dicionario_professor, dicionario_turma)
 
             elif opcao_menu_professor == '6':
-                visualizar_alunos_professor_especifico()
+                print("Digite o nome do professor que deseja visualizar as turmas: ")
+                nome_professor = input(">>> ").strip().title()
+                visualizar_alunos_professor_especifico(nome_professor, dicionario_professor, dicionario_turma)
             elif opcao_menu_professor == '0':
                 break
             else:
