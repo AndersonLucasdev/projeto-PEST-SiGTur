@@ -707,7 +707,7 @@ def remover_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma):
                                         flag_verifica_matricula = True
 
                     # verifica se o prof digitado existe em dict turma
-                    flag_verifica_matricula:
+                    if flag_verifica_matricula:
                         for siape, prof_aluno in dicionario_turma[disciplina].items():
                             for professor, alunos_lista in prof_aluno.items():
                                 for aluno in alunos_lista:
