@@ -609,11 +609,9 @@ def adicionar_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma
             flag_verifica_disciplina_existe = False
             for nome_disciplina in dicionario_turma.keys():
                 # verifica se a disciplina existe mesmo
-                if nome_disciplina == disciplina:
+                if disciplina in nome_disciplina:
                     flag_verifica_disciplina_existe = True
-            if flag_verifica_disciplina_existe != True:
-                print("Disciplina não existe")
-            else:
+            if flag_verifica_disciplina_existe:
                 # printa os alunos na disciplina
                 print(F"{'Alunos na disciplina':-^35}")
                 for siape, prof_aluno in dicionario_turma[disciplina].items():
@@ -626,7 +624,7 @@ def adicionar_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma
                 print("Digite o nome do aluno que deseja adicionar na disciplina: ")
                 nome_aluno_adicionar = input(">>> ").strip().title()
                 conta_nomes = verifica_dois_nomes_iguais(nome_aluno_adicionar, dicionario_aluno)
-                flag_verifica_nome_dict = verifica_dicionario(nome, dicionario_aluno)
+                flag_verifica_nome_dict = verifica_dicionario(nome_aluno_adicionar, dicionario_aluno)
                 if flag_verifica_nome_dict:
                     mostrar_pessoas_nomes_iguais(nome_aluno_adicionar, dicionario_aluno)
                     if conta_nomes == 1:
@@ -658,6 +656,8 @@ def adicionar_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma
                             salvar_dicionarios(dicionario_turma, nome_do_arquivo)
                 else:
                     print("A pessoa não existe!")
+            else:
+                print("Disciplina não existe!")
         else:
             print("Não existem turmas cadastradas!")
     else:
