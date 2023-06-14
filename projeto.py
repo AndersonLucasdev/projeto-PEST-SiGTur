@@ -673,11 +673,9 @@ def remover_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma):
             flag_verifica_disciplina_existe = False
             for nome_disciplina in dicionario_turma.keys():
                 # verifica se a disciplina existe mesmo
-                if nome_disciplina == disciplina:
+                if disciplina in nome_disciplina:
                     flag_verifica_disciplina_existe = True
-            if flag_verifica_disciplina_existe != True:
-                print("Disciplina não existe")
-            else:
+            if flag_verifica_disciplina_existe:
                 ## verifica se existem alunos em disciplina
                 flag_verifica_nenhum_aluno_em_disciplina = False
                 for chave_prof, nome_prof in dicionario_turma[disciplina].items():
@@ -720,6 +718,8 @@ def remover_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma):
                         print("Matricula Invalida!")
                 else:
                     print("Não existem alunos cadastrados!")
+            else:
+                print("Disciplina não existe!")
         else:
             print("Não existem turmas cadastradas!")
     else:
@@ -852,7 +852,7 @@ def verifica_nome(nome):
 def visualizar_professor(nome_ver_dados_professor, dicionario_professor, dicionario_turma, nome_do_arquivo):
     verifica_dicionario_professor = verifica_dicionario(nome_ver_dados_professor, dicionario_professor)
     if verifica_dicionario_professor:
-        mostrar_pessoas_nomes_iguais(nome, dicionario)
+        mostrar_pessoas_nomes_iguais(nome_ver_dados_professor, dicionario_professor)
 
 # verifica pessoas (prof e aluno) em dicionario turmas 
 
