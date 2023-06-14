@@ -639,10 +639,10 @@ def adicionar_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma
                         print("Matricula Invalida!")
                     else:
                         flag_verifica_aluno_ja_cadastrado = False
-                        for chave_prof, nome_prof in dicionario_turma[disciplina].items():
+                        for chave_prof, nome_prof in dicionario_turma[nome_disciplina].items():
                             # percorre os alunos desse professor
                             for prof, lista_alunos in nome_prof.items():
-                                for alunos in dicionario_turma[disciplina][chave_prof][prof]:
+                                for alunos in dicionario_turma[nome_disciplina][chave_prof][prof]:
                                     for chave_aluno in alunos.keys():
                                         # se a matricula e a matricula do aluno na disciplina for igual
                                         if chave_aluno == matricula:
