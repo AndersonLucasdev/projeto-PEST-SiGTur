@@ -678,33 +678,44 @@ def remover_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma):
             if flag_verifica_disciplina_existe != True:
                 print("Disciplina não existe")
             else:
-                # printa os alunos na disciplina
-                print(F"{'Alunos na disciplina':-^35}")
-                for siape, prof_aluno in dicionario_turma[disciplina].items():
-                    for professor, alunos_lista in prof_aluno.items():
-                        print(f"{'Matrícula:':<12} Aluno:")
-                        for aluno in alunos_lista:
-                            for matricula, nome_aluno in aluno.items():
-                                print(f"{matricula:<12}",nome_aluno)
-                print("Digite a matricula do aluno que deseja remover da disciplina: ")
-                matricula = input(">>> ").strip()
-                # verificações na matricula
-                flag_verifica_matricula = False
-                for matricula_alunos, nome_alunos in aluno.items():
-                    if matricula_alunos == matricula:
-                        flag_verifica_matricula = True
-                # verifica se o prof digitado existe em dict turma
-                if flag_verifica_matricula == False:
-                    print("Matricula Invalida!")
-                else:
+                ## verifica se existem alunos em disciplina
+                flag_verifica_nenhum_aluno_em_disciplina = False
+                for chave_prof, nome_prof in dicionario_turma[disciplina].items():
+                    # percorre os alunos desse professor
+                    for prof, lista_alunos in nome_prof.items():
+                        for alunos in dicionario_turma[disciplina][chave_prof][prof]:
+                            if len(alunos) == 0:
+                                flag_verifica_nenhum_aluno_em_disciplina = True
+                if flag_verifica_nenhum_aluno_em_disciplina != True:
+                    # printa os alunos na disciplina
+                    print(F"{'Alunos na disciplina':-^35}")
                     for siape, prof_aluno in dicionario_turma[disciplina].items():
                         for professor, alunos_lista in prof_aluno.items():
+                            print(f"{'Matrícula:':<12} Aluno:")
                             for aluno in alunos_lista:
-                                for matricula_alunos, nome_aluno in aluno.items():
-                                    if int(matricula_alunos) == int(matricula):
-                                        alunos_lista.remove(aluno)
-                    nome_do_arquivo = 'dicionario_turma'
-                    salvar_dicionarios(dicionario_turma, nome_do_arquivo)
+                                for matricula, nome_aluno in aluno.items():
+                                    print(f"{matricula:<12}",nome_aluno)
+                    print("Digite a matricula do aluno que deseja remover da disciplina: ")
+                    matricula = input(">>> ").strip()
+                    # verificações na matricula
+                    flag_verifica_matricula = False
+                    for matricula_alunos, nome_alunos in aluno.items():
+                        if matricula_alunos == matricula:
+                            flag_verifica_matricula = True
+                    # verifica se o prof digitado existe em dict turma
+                    if flag_verifica_matricula == False:
+                        print("Matricula Invalida!")
+                    else:
+                        for siape, prof_aluno in dicionario_turma[disciplina].items():
+                            for professor, alunos_lista in prof_aluno.items():
+                                for aluno in alunos_lista:
+                                    for matricula_alunos, nome_aluno in aluno.items():
+                                        if int(matricula_alunos) == int(matricula):
+                                            alunos_lista.remove(aluno)
+                        nome_do_arquivo = 'dicionario_turma'
+                        salvar_dicionarios(dicionario_turma, nome_do_arquivo)
+                else:
+                    print("Não existem alunos cadastrados!")
         else:
             print("Não existem turmas cadastradas!")
     else:
