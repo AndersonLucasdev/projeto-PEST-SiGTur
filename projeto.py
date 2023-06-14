@@ -699,9 +699,12 @@ def remover_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma):
                     matricula = input(">>> ").strip()
                     # verificações na matricula
                     flag_verifica_matricula = False
-                    for matricula_alunos, nome_alunos in aluno.items():
-                        if matricula_alunos == matricula:
-                            flag_verifica_matricula = True
+                    for chave_prof, nome_prof in dicionario_turma[disciplina].items():
+                        for prof, lista_alunos in nome_prof.items():
+                            for alunos in dicionario_turma[disciplina][chave_prof][prof]:
+                                for matricula_alunos, nome_alunos in alunos.items():
+                                    if int(matricula_alunos) == int(matricula):
+                                        flag_verifica_matricula = True
                     # verifica se o prof digitado existe em dict turma
                     if flag_verifica_matricula == False:
                         print("Matricula Invalida!")
