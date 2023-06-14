@@ -614,7 +614,7 @@ def adicionar_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma
             if flag_verifica_disciplina_existe:
                 # printa os alunos na disciplina
                 print(F"{'Alunos na disciplina':-^35}")
-                for siape, prof_aluno in dicionario_turma[disciplina].items():
+                for siape, prof_aluno in dicionario_turma[nome_disciplina].items():
                     for professor, alunos_lista in prof_aluno.items():
                         print(f"{'Matrícula:':<12} Aluno:")
                         for aluno in alunos_lista:
@@ -705,10 +705,9 @@ def remover_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma):
                                 for matricula_alunos, nome_alunos in alunos.items():
                                     if int(matricula_alunos) == int(matricula):
                                         flag_verifica_matricula = True
+
                     # verifica se o prof digitado existe em dict turma
-                    if flag_verifica_matricula == False:
-                        print("Matricula Invalida!")
-                    else:
+                    flag_verifica_matricula:
                         for siape, prof_aluno in dicionario_turma[disciplina].items():
                             for professor, alunos_lista in prof_aluno.items():
                                 for aluno in alunos_lista:
@@ -717,6 +716,8 @@ def remover_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma):
                                             alunos_lista.remove(aluno)
                         nome_do_arquivo = 'dicionario_turma'
                         salvar_dicionarios(dicionario_turma, nome_do_arquivo)
+                    else:
+                        print("Matricula Invalida!")
                 else:
                     print("Não existem alunos cadastrados!")
         else:
