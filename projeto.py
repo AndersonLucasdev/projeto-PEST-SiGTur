@@ -835,7 +835,7 @@ def verifica_nome(nome):
 
 ## funções professor
 def visualizar_professor(nome_ver_dados_professor, dicionario_professor, dicionario_turma, nome_do_arquivo):
-    verifica_dicionario_professor = verifica_dicionario(nome, dicionario)
+    verifica_dicionario_professor = verifica_dicionario(nome_ver_dados_professor, dicionario_professor)
     if verifica_dicionario_professor:
         mostrar_pessoas_nomes_iguais(nome, dicionario)
 
