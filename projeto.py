@@ -574,7 +574,7 @@ def mudar_prof_uma_disciplina(nome_disciplina, dicionario_turma, dicionario_prof
                 if conta_nomes == 1:
                     print("Confirmação!")
                 # percorrendo as pessoas com esse nome
-                print(f"Digite a matricula do(a) {nome_professor} que deseja substituir: ")
+                print(f"Digite a matricula do(a) {nome_professor}: ")
                 matricula = input(">>> ").strip()
                 # verificações na matricula
                 flag_verifica_matricula = verifica_matricula(matricula, dicionario_professor)
@@ -592,7 +592,7 @@ def mudar_prof_uma_disciplina(nome_disciplina, dicionario_turma, dicionario_prof
                     # salvo no json turma e professor
                     nome_do_arquivo = 'dicionario_turma'
                     salvar_dicionarios(dicionario_turma, nome_do_arquivo)
-                    print("Professor removido com sucesso!")
+                    print("Professor substituido com sucesso!")
             else:
                 print("A disciplina não existe")
     else:
