@@ -531,7 +531,7 @@ def adicionar_disciplina(dicionario_aluno, dicionario_prof, dicionario_turma, no
 
 
 
-
+# editar turma
 def editar_turma(dicionario_turma, dicionario_professor, nome_arquivo):
     while True:
         opcao_menu_coordenador_editar_turma = menu_coordenador_editar_turma()
@@ -553,7 +553,7 @@ def editar_turma(dicionario_turma, dicionario_professor, nome_arquivo):
             print("Opção inválida! Digite um opção valida")
 
 
-
+# funções dentro do editar turma
 def mudar_prof_uma_disciplina(nome_disciplina, dicionario_turma, dicionario_professor):
     # verifica dict turma
     if len(dicionario_turma):
@@ -597,7 +597,6 @@ def mudar_prof_uma_disciplina(nome_disciplina, dicionario_turma, dicionario_prof
                 print("A disciplina não existe")
     else:
         print("Não existem turmas cadastradas")
-
 
 
 def adicionar_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma):
@@ -663,7 +662,6 @@ def adicionar_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma
         print("Não existem aluno cadastrados!")
 
              
-
 def remover_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma):
     flag_verifica_dicionario_vazio_aluno = verifica_dicionario_vazio(dicionario_aluno)
     if flag_verifica_dicionario_vazio_aluno:
@@ -725,7 +723,7 @@ def remover_aluno_em_disciplina(disciplina, dicionario_aluno, dicionario_turma):
         print("Não existem aluno cadastrados!")
 
 
-
+# ver turmas 
 def ver_turmas(nome_disciplina, dicionario_turma):
     print(35*'-')
     if len(dicionario_turma):
@@ -734,28 +732,27 @@ def ver_turmas(nome_disciplina, dicionario_turma):
             # verifica se o nome digitado existe em dicionario turmas
             if nome_disciplina in nome_turma:
                 flag_verifica_disciplina = True
-                break
-        if flag_verifica_disciplina:
-                print(f"Disciplina: {nome_turma.upper()}")
-                print()
-                for siape, prof_aluno in dicionario_turma[nome_turma].items():
-                    print(f"{'SIAPE:':<8}Professor:")
-                    print(f"{siape:<8}", end = "")
-                    for professor, alunos_lista in prof_aluno.items():
-                        print(professor)
-                        print()
-                        print(f"{'Matrícula:':<12} Aluno:")
-                        for aluno in alunos_lista:
-                            for matricula, nome_aluno in aluno.items():
-                                print(f"{matricula:<12}",nome_aluno)
-        else:
+            if flag_verifica_disciplina:
+                    print(f"Disciplina: {nome_turma.upper()}")
+                    print()
+                    for siape, prof_aluno in dicionario_turma[nome_turma].items():
+                        print(f"{'SIAPE:':<8}Professor:")
+                        print(f"{siape:<8}", end = "")
+                        for professor, alunos_lista in prof_aluno.items():
+                            print(professor)
+                            print()
+                            print(f"{'Matrícula:':<12} Aluno:")
+                            for aluno in alunos_lista:
+                                for matricula, nome_aluno in aluno.items():
+                                    print(f"{matricula:<12}",nome_aluno)
+        if flag_verifica_disciplina == False:
             print("A disciplina não está cadastrada!")
     else:
         print("Não existem turmas cadastradas!")
     print(35*'-')
 
 
-
+# ver todas as turmas
 def ver_todas_as_turmas(dicionario_turmas):
     if len(dicionario_turmas):
         print(35*'-')
@@ -766,7 +763,7 @@ def ver_todas_as_turmas(dicionario_turmas):
         print("Não existem turmas cadastradas!")
 
 
-
+# remover turma/disciplina
 def remover_disciplina(nome_disciplina, dicionario_turma):
     flag_verifica_tudo_remover_disciplina = verifica_tudo_remover_disciplina(nome_disciplina, dicionario_turma)
     if flag_verifica_tudo_remover_disciplina:
@@ -790,7 +787,7 @@ def verifica_tudo_remover_disciplina(nome_disciplina, dicionario_turma):
         print("Não existem disciplinas cadastradas!")
 
 
-
+# verificações globais, gerais
 # verificações de pessoas com nomes iguais
 def verifica_dois_nomes_iguais(nome, dicionario):
     conta_nomes = 0
@@ -887,96 +884,123 @@ def verifica_aluno_em_disciplina(matricula, dicionario_turmas, dicionario_profes
 while True:
     # chama a função menu login ou menu principal
     opcao_menu_adm = menu_adm()
-    # verifica se o usuario colocou uma 
+    # verifica se o usuario colocou um (coordenador)
     if opcao_menu_adm == '1':
         while True:
             # chamando a função menu coordenador
             opcao_menu_coordenador = menu_coordenador()
+            # criar turma
             if opcao_menu_coordenador == '1':
+
                 nome_do_arquivo = 'dicionario_turma'
                 criar_turma(dicionario_aluno, dicionario_professor, dicionario_turma, nome_do_arquivo)
+            # editar turma
             elif opcao_menu_coordenador == '2':
+
                 nome_do_arquivo = 'dicionario_turma'
                 editar_turma(dicionario_turma, dicionario_professor, nome_do_arquivo)
+            # ver turma
             elif opcao_menu_coordenador == '3':
+
                 print("Digite o nome da disciplina que deseja ver: ")
                 nome_disciplina = input(">>> ").strip().title()
-                ver_turmas(nome_disciplina, dicionario_turma, )
+                ver_turmas(nome_disciplina, dicionario_turma)
+            # ver todas as turmas
             elif opcao_menu_coordenador == '4':
+
                 ver_todas_as_turmas(dicionario_turma)
+            # remover turma/disciplina
             elif opcao_menu_coordenador == '5':
+
                 print("Digite o nome da disciplina que deseja remover: ")
                 nome_disciplina = input(">>> ").strip().title()
                 remover_disciplina(nome_disciplina, dicionario_turma)
+            # voltar
             elif opcao_menu_coordenador == '0':
                 break
             else:
                 print("Opção inválida! Digite um opção valida")
-    
+    # verifica se o usuario colocou um (professor)
     elif opcao_menu_adm == '2':
         while True:
             opcao_menu_professor = menu_professor()
             ## cadastrar professor
             if opcao_menu_professor == '1':
+
                 print("Digite o nome do professor que deseja cadastrar: ")
                 nome_professor = input(">>> ").strip().title()
                 nome_do_arquivo = 'dicionario_professor'
-
                 cadastro(dicionario_professor, nome_professor, nome_do_arquivo)
+            # editar professor
             elif opcao_menu_professor == '2':
+
                 print("Digite o nome do professor que deseja editar: ")
                 nome_professor = input(">>> ").strip().title()
                 nome_do_arquivo = 'dicionario_professor'
-
                 editar_professor(nome_professor, dicionario_professor, dicionario_turma, nome_do_arquivo)
+            # ver dados professor
             elif opcao_menu_professor == '3':
+
                 print("Digite o nome do professor que gostaria de ver os dados")
                 nome_ver_dados_professor = input(">>> ").strip().title()
                 nome_do_arquivo = 'dicionario_professor'
                 visualizar_professor(nome_ver_dados_professor, dicionario_professor, dicionario_turma, nome_do_arquivo)
-
+            # excluir professor
             elif opcao_menu_professor == '4':
+
                 print("Digite o nome do professor que deseja excluir: ")
                 nome_professor = input(">>> ").strip().title()
                 nome_do_arquivo = 'dicionario_professor'
                 excluir_professor(nome_professor, dicionario_professor, dicionario_turma, nome_do_arquivo)
-
+            # ver turmas do prof
             elif opcao_menu_professor == '5':
+
                 print("Digite o nome do professor que deseja visualizar as turmas: ")
                 nome_professor = input(">>> ").strip().title()
                 visualizar_turmas_professor_especifico(nome_professor, dicionario_professor, dicionario_turma)
-
+            # visualizar alunos da disciplina
             elif opcao_menu_professor == '6':
+
                 print("Digite o nome da disciplina que deseja visualizar os alunos: ")
                 nome_disciplina = input(">>> ").strip().title()
                 visualizar_alunos_professor_especifico(nome_disciplina, dicionario_professor, dicionario_turma)
+            # voltar
             elif opcao_menu_professor == '0':
                 break
             else:
                 print("Opção inválida! Digite um opção valida")
+    # verifica se o usuario colocou um (aluno)
     elif opcao_menu_adm == '3':
         while True:
             opcao_menu_aluno = menu_aluno()
             ## cadastrar aluno
             if opcao_menu_aluno == '1':
+
                 print("Digite o nome do aluno que deseja cadastrar: ")
                 nome_aluno = input(">>> ").strip().title()
                 nome_do_arquivo = 'dicionario_aluno'
                 cadastro(dicionario_aluno, nome_aluno, nome_do_arquivo)
+
             ## editar aluno
             elif opcao_menu_aluno == '2':
+
                 print("Digite o nome do aluno que deseja editar: ")
                 nome_aluno = input(">>> ").strip().title()
                 nome_do_arquivo = 'dicionario_aluno'
                 editar_aluno(nome_aluno, dicionario_aluno, dicionario_turma, nome_do_arquivo)
+
             ## visualizar alunos
             elif opcao_menu_aluno == '3':
+
                 visualizar_aluno(dicionario_aluno)
+
             elif opcao_menu_aluno == '4':
+
                 print("Digite o nome do aluno que deseja excluir: ")
                 nome_aluno = input(">>> ").strip().title()
                 nome_do_arquivo = 'dicionario_aluno'
                 excluir_aluno(nome_aluno, dicionario_aluno, dicionario_turma, dicionario_professor, nome_do_arquivo)
+
             elif opcao_menu_aluno == '0':
                 break
             else:
