@@ -211,12 +211,11 @@ def editar_aluno(nome, dicionario_aluno, dicionario_turmas, nome_do_arquivo):
         # verifica se a matricula está cadastrada
         if flag_verifica_matricula:
             # verifica se o prof está em alguma disciplina
-            flag_verifica_prof_em_disciplina = verficia_prof_em_disciplina(matricula, dicionario_turmas)
             print("Digite o novo nome da pessoa: ")
             nome_pessoa = input(">>> ").strip().title()
             flag_dicionario = verifica_nome(nome_pessoa)
             if flag_dicionario:
-                if len(dicionario_turma) > 0 and flag_verifica_prof_em_disciplina:
+                if len(dicionario_turma) > 0:
                     # percorre disciplinas
                     for chave_turma in dicionario_turmas.keys():
                         # percorre matricula
